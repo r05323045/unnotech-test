@@ -59,7 +59,7 @@ export default {
 <style lang="scss">
 .home {
   height: 100%;
-  min-height: 900px;
+  min-height: 980px;
   .top-wrapper {
     background: #000000;
     color: #ffffff;

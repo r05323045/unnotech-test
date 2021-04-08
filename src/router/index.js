@@ -14,6 +14,10 @@ const routes = [
         component: () => import('@/components/BookDetail.vue')
       }
     ]
+  },
+  {
+    path: '*',
+    redirect: '/books'
   }
 ]
 

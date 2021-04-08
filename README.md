@@ -56,4 +56,7 @@ App.vue
 
 平日需上班且恰且與其餘面試撞期，需權衡開發時間與加分建議，也思考了是否需投入時間研究過去未接觸的 composition-api 與 tailwind css ，最後選擇使用熟悉的 vue 2 搭配 scss 完成專案，同時盡量使用第三方套件如 Swiper 優化介面節省開發時間。
 
+---
+
+### [Demo](https://r05323045.github.io/unnotech-test/)
 
