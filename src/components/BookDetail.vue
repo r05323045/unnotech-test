@@ -1,6 +1,6 @@
 <template>
   <div class="detail-card" v-if="Object.keys(book).length > 0">
-    <div class="card-header">選擇價格與數量</div>
+    <div class="card-header">{{ books.filter((item) => { return item.id === book.id })[0].name }}</div>
     <div class="card-content">
       <validation-observer class="observer" v-slot="{ handleSubmit, invalid }">
         <form @submit.prevent="handleSubmit(submitData)">
@@ -54,6 +54,11 @@ export default {
     return {
       book: {},
       bookId: 0
+    }
+  },
+  props: {
+    books: {
+      type: Array
     }
   },
   created () {
@@ -127,6 +132,13 @@ $darkred: #c13515;
     padding: 12px 24px;
     font-weight: 700;
     text-align: left;
+    overflow: hidden;
+    line-height: 1.8;
+    max-height: 22px;
+    text-overflow: ellipsis;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 1 !important;
+    -webkit-box-orient: vertical !important;
   }
   .card-content {
     padding: 15px 30px;

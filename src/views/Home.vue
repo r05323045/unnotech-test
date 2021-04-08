@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <div class="top-wrapper">
-      <div class="title">書籍清單</div>
+      <div class="title-wrapper"><span class="title" @click="$router.push('/books').catch(() => {})">書籍清單</span></div>
       <div class="description">多久沒看書了？ 點選書籍開始選購！</div>
     </div>
     <div class="book-list-wrapper">
@@ -9,7 +9,7 @@
       <book-list-Mobile  :books="books" v-if="windowWidth < 768 && this.books.length > 0"/>
     </div>
     <div class="book-detail-wrapper">
-      <router-view/>
+      <router-view :books="books"/>
     </div>
   </div>
 </template>
@@ -67,7 +67,7 @@ export default {
     margin: auto;
     font-weight: 700;
     padding: 80px 0 40px;
-    .title {
+    .title-wrapper {
       height: 40px;
       font-size: 22px;
       line-height: 22px;
@@ -75,6 +75,9 @@ export default {
         font-size: 32px;
         line-height: 36px;
         margin-bottom: 12px;
+      }
+      .title {
+        cursor: pointer;
       }
     }
     .description {

@@ -9,6 +9,7 @@
         </div>
         <div class="book-name">{{ book.name }}</div>
       </div>
+      <div class="card-slide" v-if="books.length / 2 > 0"></div>
     </div>
   </div>
 </template>
@@ -41,7 +42,7 @@ export default {
       margin-bottom: 24px;
       text-align: center;
       font-size: 18px;
-      min-width: 250px !important;
+      width: 200px;
       margin: 24px 12px !important;
       .inner-wrapper {
         cursor: pointer;
@@ -80,6 +81,12 @@ export default {
         font-size: 18px;
         font-weight: 700;
         line-height: 22px;
+        overflow: hidden;
+        height: 66px;
+        text-overflow: ellipsis;
+        display: -webkit-box !important;
+        -webkit-line-clamp: 3 !important;
+        -webkit-box-orient: vertical !important;
       }
     }
     .card-slide.selected {
