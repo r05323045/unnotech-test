@@ -95,6 +95,7 @@ export default {
         this.book.price = this.book.data.price
         this.book.count = this.book.data.count
         const { data } = await booksAPI.putBook(this.$route.params.id, this.book)
+        this.book = data
         if (!data.id) {
           throw new Error(data.message)
         }

@@ -75,11 +75,6 @@ export default {
       &:hover {
         transform: scale(1.02);
         transition: ease-in-out 0.3s;
-        .background {
-          .image {
-            filter: brightness(1);
-          }
-        }
       }
       .inner-wrapper {
         cursor: pointer;
@@ -96,9 +91,6 @@ export default {
             bottom: 0;
             right: 0;
             left:0;
-            @media (min-width: 768px) {
-              filter: brightness(0.8);
-            }
           }
         }
       }
@@ -133,7 +125,7 @@ export default {
       top: calc(50% - 1.5rem);
       background: #ffffff;
       border-radius: 50%;
-      box-shadow: 1px 1px 2px 0 rgba(0,0,0,0.2);
+      box-shadow: rgba(0, 0, 0, 0.12) 0px 6px 16px;
       width: 3rem;
       height: 3rem;
       &:hover {
