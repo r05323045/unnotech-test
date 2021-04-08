@@ -1,39 +1,104 @@
 <template>
-  <div class="detail-card">
+  <div class="detail-card" v-if="Object.keys(book).length > 0">
     <div class="card-header">選擇價格與數量</div>
     <div class="card-content">
-      <div class="item-wrapper">
-        <div class="container">
-          <span class="title">價格</span>
-          <div class="adjust-wrapper">
-            <div class="icon-wrapper">
-              <div class="icon minus"></div>
+      <form @submit.prevent="handleSubmit()">
+        <div class="item-wrapper">
+          <div class="container">
+            <span class="title">價格</span>
+            <div class="adjust-wrapper">
+              <div class="icon-wrapper" :class="{ equalOne: book.data.count === 1}">
+                <div class="icon minus" v-if="book.data.price > 1" @click="book.data.price > 1 ? book.data.price -= 1 : ''"></div>
+              </div>
+              <input type="number" class="number" v-model="book.data.price"/>
+              <div class="icon-wrapper">
+                <div class="icon plus" @click="book.data.price += 1"></div>
+              </div>
             </div>
-            <input class="number"/>
-            <div class="icon-wrapper">
-              <div class="icon plus"></div>
+          </div>
+          <div class="container">
+            <span class="title">數量</span>
+            <div class="adjust-wrapper">
+              <div class="icon-wrapper" :class="{ equalOne: book.data.count === 1}">
+                <div class="icon minus" v-if="book.data.count > 1" @click="book.data.count > 1 ? book.data.count -= 1 : ''"></div>
+              </div>
+              <input type="number" class="number" v-model="book.data.count" />
+              <div class="icon-wrapper">
+                <div class="icon plus" @click="book.data.count += 1"></div>
+              </div>
             </div>
           </div>
         </div>
-        <div class="container">
-          <span class="title">數量</span>
-          <div class="adjust-wrapper">
-            <div class="icon-wrapper">
-              <div class="icon minus"></div>
-            </div>
-            <input class="number"/>
-            <div class="icon-wrapper">
-              <div class="icon plus"></div>
-            </div>
-          </div>
+        <div class="button-wrapper">
+          <button type="submit" class="button">確認修改</button>
         </div>
-      </div>
-      <div class="button-wrapper">
-        <div class="button">確認修改</div>
-      </div>
+      </form>
     </div>
   </div>
 </template>
+
+<script>
+import { Toast } from '@/utils/helpers'
+import booksAPI from '@/apis/books'
+export default {
+  data () {
+    return {
+      book: {},
+      bookId: 0
+    }
+  },
+  created () {
+    this.bookId = this.$route.params.id
+    this.fetchBook()
+  },
+  watch: {
+    $route () {
+      this.bookId = this.$route.params.id
+      this.fetchBook()
+    }
+  },
+  methods: {
+    onResize () {
+      this.windowWidth = window.innerWidth
+    },
+    async fetchBook () {
+      try {
+        const { data } = await booksAPI.getBook(this.$route.params.id)
+        this.book = data
+      } catch (error) {
+        this.book = {}
+        Toast.fire({
+          icon: 'error',
+          title: '目前無法取得書籍資料'
+        })
+      }
+    },
+    handleSubmit () {
+      this.putBook()
+    },
+    async putBook () {
+      try {
+        this.book.price = this.book.data.price
+        this.book.count = this.book.data.count
+        const { data } = await booksAPI.putBook(this.$route.params.id, this.book)
+        if (!data.id) {
+          throw new Error(data.message)
+        }
+        Toast.fire({
+          icon: 'success',
+          title: '已成功更新'
+        })
+      } catch (error) {
+        this.book = {}
+        Toast.fire({
+          icon: 'error',
+          title: '目前無法取得書籍資料'
+        })
+      }
+    }
+  }
+}
+</script>
 
 <style lang="scss" scoped>
 .detail-card {
@@ -54,93 +119,112 @@
     text-align: left;
   }
   .card-content {
-    padding: 30px;
+    padding: 15px 30px;
     display: flex;
     flex-direction: column;
     @media (min-width: 375px) {
       flex-direction: row;
     }
-    .item-wrapper {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      .container {
-        margin: 24px 0;
+    form {
+      width: 100%;
+      .item-wrapper {
+        position: relative;
         display: flex;
-        flex-direction: row;
-        .title {
-          font-size: 1.2rem;
-          font-weight: 700;
-          margin-right: 24px;
-          flex: 0.5;
-          @media (min-width: 375px) {
-            flex: none;
-          }
-        }
-        .adjust-wrapper {
-          flex: 1;
+        flex-direction: column;
+        justify-content: flex-start;
+        .container {
+          margin: 24px 0;
           display: flex;
           flex-direction: row;
-          align-items: center;
-          .number {
-            width: 40px;
-            margin-right: 12px;
-            color: #222222;
+          .title {
+            font-size: 1.2rem;
             font-weight: 700;
-            border-radius: 4px;
-            border-width: 1px;
-            &:focus {
-              outline: none;
+            margin-right: 24px;
+            flex: 0.5;
+            @media (min-width: 375px) {
+              flex: none;
             }
           }
-          .icon-wrapper {
-            width: 16px;
-            height: 16px;
-            border-radius: 100%;
-            margin-right: 12px;
-            mask-size: cover;
-            background: #000000;
+          .adjust-wrapper {
+            flex: 1;
             display: flex;
+            flex-direction: row;
             align-items: center;
-            justify-content: center;
-            .icon {
-              cursor: pointer;
-              width: 12px;
-              height: 12px;
-              background: #ffffff;
+            .number {
+              width: 40px;
+              text-align: center;
+              margin-right: 12px;
+              color: #222222;
+              font-weight: 500;
+              font-size: 18px;
+              border-radius: 4px;
+              border-width: 1px;
+              &:focus {
+                outline: none;
+              }
+            }
+            input::-webkit-outer-spin-button,
+            input::-webkit-inner-spin-button {
+              -webkit-appearance: none;
+              margin: 0;
+            }
+            input[type=number] {
+              -moz-appearance: textfield;
+            }
+            .icon-wrapper {
+              width: 16px;
+              height: 16px;
+              border-radius: 100%;
+              margin-right: 12px;
               mask-size: cover;
+              background: #000000;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              .icon {
+                cursor: pointer;
+                width: 12px;
+                height: 12px;
+                background: #ffffff;
+                mask-size: cover;
+              }
+              .icon.plus {
+                mask: url(../assets/plus.svg) no-repeat center;
+              }
+              .icon.minus {
+                mask: url(../assets/minus.svg) no-repeat center;
+              }
             }
-            .icon.plus {
-              mask: url(../assets/plus.svg) no-repeat center;
+            .icon-wrapper.equalOne {
+              background: #ffffff;
             }
-            .icon.minus {
-              mask: url(../assets/minus.svg) no-repeat center;
-            }
-          }
-          .icon-wrapper.equalOne {
-            background: #ffffff;
           }
         }
       }
-    }
-    .button-wrapper {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      @media (min-width: 375px) {
-        justify-content: flex-end;
-        align-items: flex-end;
+      .button-wrapper {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        @media (min-width: 375px) {
+          justify-content: flex-end;
+          align-items: flex-end;
+        }
+        .button {
+          cursor: pointer;
+          appearance: none;
+          margin: 8px 24px;
+          padding: 8px 16px;
+          background: #000000;
+          color: #ffffff;
+          font-weight: 700;
+          border-radius: 15px;
+          &:focus {
+            outline: none;
+          }
+        }
       }
-      .button {
-        margin: 24px;
-        padding: 8px 16px;
-        background: #000000;
-        color: #ffffff;
-        font-weight: 700;
-        border-radius: 15px;
-      }
+
     }
   }
 }

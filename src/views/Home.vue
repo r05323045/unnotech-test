@@ -2,11 +2,11 @@
   <div class="home">
     <div class="top-wrapper">
       <div class="title">書籍清單</div>
-      <div class="description">多久沒看書了？ 快來選購你要的書籍</div>
+      <div class="description">多久沒看書了？ 點選書籍開始選購！</div>
     </div>
     <div class="book-list-wrapper">
-      <book-list-desktop v-if="windowWidth >= 768"/>
-      <book-list-Mobile  v-if="windowWidth < 768"/>
+      <book-list-desktop :books="books" v-if="windowWidth >= 768 && this.books.length > 0"/>
+      <book-list-Mobile  :books="books" v-if="windowWidth < 768 && this.books.length > 0"/>
     </div>
     <div class="book-detail-wrapper">
       <router-view/>
@@ -17,7 +17,7 @@
 <script>
 import BookListDesktop from '@/components/BookListDesktop.vue'
 import BookListMobile from '@/components/BookListMobile.vue'
-
+import booksAPI from '@/apis/books'
 export default {
   components: {
     BookListDesktop,
@@ -25,8 +25,12 @@ export default {
   },
   data () {
     return {
-      windowWidth: window.innerWidth
+      windowWidth: window.innerWidth,
+      books: []
     }
+  },
+  created () {
+    this.fetchBooks()
   },
   mounted () {
     this.$nextTick(() => {
@@ -39,6 +43,14 @@ export default {
   methods: {
     onResize () {
       this.windowWidth = window.innerWidth
+    },
+    async fetchBooks () {
+      try {
+        const { data } = await booksAPI.getBooks()
+        this.books = data
+      } catch (error) {
+        console.log(error)
+      }
     }
   }
 }
@@ -47,7 +59,7 @@ export default {
 <style lang="scss">
 .home {
   height: 100%;
-  min-height: 980px;
+  min-height: 900px;
   .top-wrapper {
     background: #000000;
     color: #ffffff;

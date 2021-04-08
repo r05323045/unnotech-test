@@ -1,13 +1,13 @@
 <template>
   <div class="swiper-container">
     <div class="swiper-wrapper">
-      <div class="swiper-slide" @click="$router.push(`/books/${i}`).catch(() => {})" v-for="i in 5" :key="i" :class="{ selected: $route.path === `/books/${i}`}">
+      <div class="swiper-slide" @click="$router.push(`/books/${book.id}`).catch(() => {})" v-for="book in books" :key="book.id" :class="{ selected: $route.path === `/books/${book.id}`}">
         <div class="inner-wrapper">
           <div class="background">
-            <div class="image" style="background: url(https://cf-assets2.tenlong.com.tw/products/images/000/157/348/medium/DM2110_3D-750x933-wide.jpg?1612439588) no-repeat center / cover"></div>
+            <div class="image" :style="`background: url(${book.image}) no-repeat center / cover`"></div>
           </div>
         </div>
-        <div class="book-name">駭客廝殺不講武德：CTF 強者攻防大戰直擊</div>
+        <div class="book-name">{{ book.name }}</div>
       </div>
     </div>
     <div class="swiper-button-next"></div>
@@ -21,6 +21,11 @@ import Swiper from 'swiper/swiper-bundle.js'
 import 'swiper/swiper-bundle.css'
 
 export default {
+  props: {
+    books: {
+      type: Array
+    }
+  },
   mounted () {
     // eslint-disable-next-line no-unused-vars
     const swiper = new Swiper('.swiper-container', {
