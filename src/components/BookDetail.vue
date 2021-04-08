@@ -3,7 +3,7 @@
     <div class="card-header">選擇價格與數量</div>
     <div class="card-content">
       <validation-observer class="observer" v-slot="{ handleSubmit, invalid }">
-        <form @submit.prevent="handleSubmit(putBook)">
+        <form @submit.prevent="handleSubmit(submitData)">
           <div class="item-wrapper">
             <div class="container">
               <span class="title">價格</span>
@@ -48,6 +48,7 @@
 <script>
 import { Toast } from '@/utils/helpers'
 import booksAPI from '@/apis/books'
+import _ from 'loadsh'
 export default {
   data () {
     return {
@@ -81,6 +82,9 @@ export default {
         })
       }
     },
+    submitData: _.debounce(function () {
+      this.putBook()
+    }, 1000),
     async putBook () {
       try {
         this.book.price = this.book.data.price
