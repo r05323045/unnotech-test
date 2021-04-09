@@ -1,6 +1,6 @@
 <template>
   <div class="detail-card" v-if="Object.keys(book).length > 0">
-    <div class="card-header">{{ books.filter((item) => { return item.id === book.id })[0].name }}</div>
+    <div class="card-header">{{ books.filter((item) => { return item.id === book.id }) ? books.filter((item) => { return item.id === book.id })[0].name : '' }}</div>
     <div class="card-content">
       <validation-observer class="observer" v-slot="{ handleSubmit, invalid }">
         <form @submit.prevent="handleSubmit(submitData)">
@@ -8,30 +8,30 @@
             <div class="container">
               <span class="title">價格</span>
               <div class="adjust-wrapper">
-                <div class="icon-wrapper" :class="{ equalOne: book.data.price <= 1}">
-                  <div class="icon minus" @click="book.data.price > 1 ? book.data.price-- : ''"></div>
+                <div class="icon-wrapper" :class="{ equalOne: book.price <= 1}">
+                  <div class="icon minus" @click="book.price > 1 ? book.price-- : ''"></div>
                 </div>
                 <validation-provider class="provider" v-slot="{ errors, classes }" :rules="{ required: true, numeric: true, min: 1 }">
-                  <input id="price" type="number" class="number" min="1" v-model="book.data.price" :class="classes">
+                  <input id="price" type="number" class="number" min="1" v-model="book.price" :class="classes">
                    <span v-if="errors[0]" class="invalid-text">{{ errors[0].replace('price ', '價格') }}</span>
                 </validation-provider>
                 <div class="icon-wrapper">
-                  <div class="icon plus" @click="book.data.price++"></div>
+                  <div class="icon plus" @click="book.price++"></div>
                 </div>
               </div>
             </div>
             <div class="container">
               <span class="title">數量</span>
               <div class="adjust-wrapper">
-                <div class="icon-wrapper" :class="{ equalOne: book.data.count <= 1}">
-                  <div class="icon minus" @click="book.data.count > 1 ? book.data.count-- : ''"></div>
+                <div class="icon-wrapper" :class="{ equalOne: book.count <= 1}">
+                  <div class="icon minus" @click="book.count > 1 ? book.count-- : ''"></div>
                 </div>
                 <validation-provider class="provider"  v-slot="{ errors, classes }" :rules="{ required: true, numeric: true, min: 1 }">
-                  <input id="count"  type="number" class="number" min="1" v-model="book.data.count" :class="classes">
+                  <input id="count"  type="number" class="number" min="1" v-model="book.count" :class="classes">
                   <span v-if="errors[0]" class="invalid-text">{{ errors[0].replace('count ', '數量') }}</span>
                 </validation-provider>
                 <div class="icon-wrapper">
-                  <div class="icon plus" @click="book.data.count++"></div>
+                  <div class="icon plus" @click="book.count++"></div>
                 </div>
               </div>
             </div>
@@ -92,8 +92,6 @@ export default {
     }, 1000),
     async putBook () {
       try {
-        this.book.price = this.book.data.price
-        this.book.count = this.book.data.count
         const { data } = await booksAPI.putBook(this.$route.params.id, this.book)
         this.book = data
         if (!data.id) {
